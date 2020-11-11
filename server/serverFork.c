@@ -1,4 +1,3 @@
-// Homework 3 - Tarik Redzepagic - 16029 - Threaded
 #include<stdio.h>
 #include<string.h>
 #include<sys/socket.h>
@@ -18,7 +17,7 @@ int main(void)
     int serverSocketDescriptor, clientSocketDescriptor, addr_size = 0;
     struct sockaddr_in serv_addr,client;
     pid_t childPID; 
-    unsigned int childProcCount = 0;  /* Number of child processes */
+    unsigned int childProcCount = 0;  // Number of child processes
 
 
     check((serverSocketDescriptor = socket(AF_INET, SOCK_STREAM, 0)), "Could not create socket!");
@@ -40,14 +39,14 @@ int main(void)
     addr_size = sizeof(struct sockaddr_in);
 
     while(1) {
-        // check((clientSocketDescriptor=accept(serverSocketDescriptor,(struct sockaddr *)&client, (socklen_t*)&addr_size)),"Accept failed!");
+        check((clientSocketDescriptor=accept(serverSocketDescriptor,(struct sockaddr *)&client, (socklen_t*)&addr_size)),"Accept failed!");
 
-        clientSocketDescriptor=accept(serverSocketDescriptor,(struct sockaddr *)&client, (socklen_t*)&addr_size);
-        if (clientSocketDescriptor<0)
-        {
-                perror("ACCEPT ERROR");
-                exit (1);
-            }
+        // clientSocketDescriptor=accept(serverSocketDescriptor,(struct sockaddr *)&client, (socklen_t*)&addr_size);
+        // if (clientSocketDescriptor<0)
+        // {
+        //         perror("ACCEPT ERROR");
+        //         exit (1);
+        //     }
  
         if((childPID = fork())<0){
             // Error
@@ -110,8 +109,7 @@ void* serverFunc(int clientSocketDescriptor)
     
     
     printf("Created filename: %s, filename length: %ld\n", fileName, strlen(fileName));
-    /* Receive data in chunks of 512 bytes */
-
+    
     // Sleep test, gives time to start one more client to test concurrency.
     puts("sleeping");
     sleep(10);

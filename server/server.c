@@ -1,4 +1,3 @@
-// Homework 3 - Tarik Redzepagic - 16029 - Threaded
 #include<stdio.h>
 #include<string.h>
 #include<sys/socket.h>
@@ -15,7 +14,7 @@ int check(int exp, const char *msg);
 // Could pass socket descriptor only, but a structure is scalable for more information
 struct ThreadArgs
 {
- int clntSock;           /* Socket descriptor for client */
+ int clntSock;           // Socket descriptor (client)
 };
 
 int main(void)
@@ -90,7 +89,6 @@ void* serverFunc(void* threadArgs)
     
     
     printf("Created filename: %s, filename length: %ld\n", fileName, strlen(fileName));
-    /* Receive data in chunks of 512 bytes */
 
     // Sleep test, gives time to start one more client to test concurrency.
     puts("sleeping");
@@ -113,6 +111,7 @@ void* serverFunc(void* threadArgs)
   
 }
 
+// Easy to use check function to eliminate code duplication
 int check(int exp, const char *msg){
     if (exp == SOCKETERROR){
         perror(msg);

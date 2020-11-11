@@ -1,9 +1,8 @@
-// kompajlirajte sa: $gcc fileclient.c -o fileclient i startajte sa $./fileclient   ime-datoteke
-#include<stdio.h> //printf
-#include<string.h>    //strlen
-#include<sys/socket.h>    //socket
+#include<stdio.h>
+#include<string.h>
+#include<sys/socket.h> 
 #include <stdbool.h>
-#include<arpa/inet.h> //inet_addr
+#include<arpa/inet.h>
 
 int main(int argc, char * argv[])
 {
@@ -12,7 +11,7 @@ int main(int argc, char * argv[])
     int bytesRead=0;
     struct sockaddr_in serv_addr;
 
-    /* Create a socket first */
+    // Create a socket first
     if((sockfd = socket(AF_INET, SOCK_STREAM, 0))< 0)
     {
         printf("\n Error : Could not create socket \n");
@@ -20,12 +19,12 @@ int main(int argc, char * argv[])
     }
     	puts("Socket created");
 
-    /* Initialize sockaddr_in data structure */
+    //  Initialize sockaddr_in data structure
     	serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     	serv_addr.sin_family = AF_INET;
     	serv_addr.sin_port = htons( 8888 );
 
-    /* Attempt a connection */
+    // Attempt a connection
     if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
     {
         printf("\n Error : Connect Failed \n");
@@ -33,7 +32,7 @@ int main(int argc, char * argv[])
     }
     	puts("Connected\n");
 
-        /* Open the file that we wish to transfer */
+        // Open file for transfer
 	    FILE *fp;        
 	    fp = fopen(argv[1],"rb");
             if(fp==NULL)
@@ -51,12 +50,13 @@ int main(int argc, char * argv[])
                 return 1;
             }
 
-        /* Read data from file and send it*/ 
+        // Read data from file and send it
         while(!feof(fp))
         {
-           /* First read file in chunks of 10 bytes */
+           // Read chunks of 512B
             bytesRead=fread(sendBuffer,1,sizeof(sendBuffer),fp);
-            /*Send a data in chunks of 10 bytes*/
+            printf("bytesread: %d: ", bytesRead); // On big files this will output 512B until everything is read
+           // Send chunk by chunk
             if( send(sockfd , sendBuffer , bytesRead , 0) < 0)
             {
         	    puts("Send failed");
