@@ -10,6 +10,14 @@ Multithreading and multiprocess techniques were employed.
 Since this is a practice project any comments and criticisms are more than welcome, since the purpose of this program is to learn more about socket programming in C.
 
 ### Usage
+Compile with
+```
+gcc server.c -o serverThreaded -pthread
+gcc server.c -o serverForked
+gcc client.c -o client
+```
+Or any other name you like. Be sure to be in the respective folders.
+
 First, start the server
 
 ```
@@ -27,6 +35,6 @@ Another terminal window
 ```
 
 ### Resources
-    - Stack Overflow
-    - Youtube
+    - Stack Overflow 
+    - Youtube (Jacob Sorber)
     - University Lectures
