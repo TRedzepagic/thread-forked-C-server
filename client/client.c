@@ -4,6 +4,9 @@
 #include <stdbool.h>
 #include<arpa/inet.h>
 
+#define SOCKETERROR (-1)
+#define LISTENQUEUE 10
+
 int main(int argc, char * argv[])
 {
     int sockfd = 0;
@@ -12,11 +15,8 @@ int main(int argc, char * argv[])
     struct sockaddr_in serv_addr;
 
     // Create a socket first
-    if((sockfd = socket(AF_INET, SOCK_STREAM, 0))< 0)
-    {
-        printf("\n Error : Could not create socket \n");
-        return 1;
-    }
+    check(sockfd = socket(AF_INET, SOCK_STREAM, 0),"\n Error: Could not create socket \n");
+  
     	puts("Socket created");
 
     //  Initialize sockaddr_in data structure
@@ -25,12 +25,8 @@ int main(int argc, char * argv[])
     	serv_addr.sin_port = htons( 8888 );
 
     // Attempt a connection
-    if(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr))<0)
-    {
-        printf("\n Error : Connect Failed \n");
-        return 1;
-    }
-    	puts("Connected\n");
+    check(connect(sockfd, (struct sockaddr *)&serv_addr, sizeof(serv_addr)),"\n Error : Connect Failed \n");
+   	puts("Connected\n");
 
         // Open file for transfer
 	    FILE *fp;        
@@ -44,11 +40,7 @@ int main(int argc, char * argv[])
         sendBuffer[0]=strlen(argv[1])+1;
         strcpy(sendBuffer+1, argv[1]);
         
-            if( send(sockfd , sendBuffer , sizeof(sendBuffer) , 0) < 0)
-            {
-                puts("Send failed");
-                return 1;
-            }
+        check((send(sockfd , sendBuffer , sizeof(sendBuffer) , 0)),"Send failed!");
 
         // Read data from file and send it
         while(!feof(fp))
@@ -57,16 +49,19 @@ int main(int argc, char * argv[])
             bytesRead=fread(sendBuffer,1,sizeof(sendBuffer),fp);
             printf("bytesread: %d: ", bytesRead); // On big files this will output 512B until everything is read
            // Send chunk by chunk
-            if( send(sockfd , sendBuffer , bytesRead , 0) < 0)
-            {
-        	    puts("Send failed");
-        	    return 1;
-            }
-
-
+           check(send(sockfd , sendBuffer , bytesRead , 0),"Send failed!");
         }
        
     fclose(fp);
 	close(sockfd);	
     return 0;
+}
+
+// Easy to use check function to eliminate code duplication
+int check(int exp, const char *msg){
+    if (exp == SOCKETERROR){
+        perror(msg);
+        exit(1);
+    }
+    return exp;
 }

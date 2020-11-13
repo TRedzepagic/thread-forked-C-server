@@ -17,7 +17,9 @@ int main(void)
     int serverSocketDescriptor, clientSocketDescriptor, addr_size = 0;
     struct sockaddr_in serv_addr,client;
     pid_t childPID; 
-    unsigned int childProcCount = 0;  // Number of child processes
+
+    // Number of child processes
+    unsigned int childProcCount = 0;  
 
 
     check((serverSocketDescriptor = socket(AF_INET, SOCK_STREAM, 0)), "Could not create socket!");
@@ -40,20 +42,13 @@ int main(void)
 
     while(1) {
         check((clientSocketDescriptor=accept(serverSocketDescriptor,(struct sockaddr *)&client, (socklen_t*)&addr_size)),"Accept failed!");
-
-        // clientSocketDescriptor=accept(serverSocketDescriptor,(struct sockaddr *)&client, (socklen_t*)&addr_size);
-        // if (clientSocketDescriptor<0)
-        // {
-        //         perror("ACCEPT ERROR");
-        //         exit (1);
-        //     }
  
         if((childPID = fork())<0){
             // Error
             perror("Fork failed!");
             exit(1);
         }   else if(childPID==0){
-            // Child
+            // We are inside the child process
             /* Linux queues up pending connections. 
             A call to accept, from either the parent or child process, will poll that queue. 
             Not closing the socket in the child process is a resource leak.
@@ -62,23 +57,25 @@ int main(void)
             serverFunc(clientSocketDescriptor);
             exit(0);
         }   else {
-            // Parent
+            // We are inside the parent process
             printf("with child process' %d\n", (int) childPID);
-            close(clientSocketDescriptor); // the parent process has already closes clientSocketDescriptor since the connection is being handled by the child.
-            childProcCount++; // Increment number of child processes
-
+            // the parent process has already closes clientSocketDescriptor since the connection is being handled by the child.
+            close(clientSocketDescriptor); 
+            // Increment number of child processes
+            childProcCount++; 
+            
             while (childProcCount) // Clean up zombies (Processes that have died but in process table)
             {
-            childPID = waitpid((pid_t)-1, NULL, WNOHANG); // Nonblocking wait
-            if (childPID < 0){
-                // waitpid() error?
-                perror("waitpid() failed");
-                exit(1);
-            }
-            else if (childPID == 0) // No more zombies
+                childPID = waitpid((pid_t)-1, NULL, WNOHANG); // Nonblocking wait
+                if (childPID < 0){
+                    perror("waitpid() failed");
+                    exit(1);
+            }else if (childPID == 0) 
+                // No more zombies
                 break;
             else
-                childProcCount--; // Cleaned up after a child
+                // Cleaned up after a child
+                childProcCount--; 
             }
 
         }

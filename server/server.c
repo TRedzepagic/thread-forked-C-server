@@ -14,7 +14,8 @@ int check(int exp, const char *msg);
 // Could pass socket descriptor only, but a structure is scalable for more information
 struct ThreadArgs
 {
- int clntSock;           // Socket descriptor (client)
+    // Socket descriptor (client)
+    int clntSock;           
 };
 
 int main(void)
