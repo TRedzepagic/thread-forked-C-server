@@ -1,11 +1,15 @@
 #include<stdio.h>
 #include<string.h>
 #include<sys/socket.h> 
-#include <stdbool.h>
 #include<arpa/inet.h>
+#include<unistd.h>
+#include<stdlib.h>
+
 
 #define SOCKETERROR (-1)
 #define LISTENQUEUE 10
+
+int check(int exp, const char *msg);
 
 int main(int argc, char * argv[])
 {
@@ -47,7 +51,7 @@ int main(int argc, char * argv[])
         {
            // Read chunks of 512B
             bytesRead=fread(sendBuffer,1,sizeof(sendBuffer),fp);
-            printf("bytesread: %d: ", bytesRead); // On big files this will output 512B until everything is read
+            printf("bytesread: %d \n", bytesRead); // On big files this will output 512B until everything is read
            // Send chunk by chunk
            check(send(sockfd , sendBuffer , bytesRead , 0),"Send failed!");
         }
