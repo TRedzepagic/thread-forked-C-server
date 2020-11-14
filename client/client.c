@@ -41,7 +41,8 @@ int main(int argc, char * argv[])
                 return 1;   
             }   
         
-        sendBuffer[0]=strlen(argv[1])+1;
+
+        sendBuffer[0]=strlen(argv[1]);
         strcpy(sendBuffer+1, argv[1]);
         
         check((send(sockfd , sendBuffer , sizeof(sendBuffer) , 0)),"Send failed!");

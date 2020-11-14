@@ -94,7 +94,11 @@ void* serverFunc(int clientSocketDescriptor)
 
     check((bytesReceived=recv(clientSocketDescriptor, recvBuff,sizeof(recvBuff),0)),"recv Failed!");
   
+    fileNameSize = recvBuff[0];
     char fileName[fileNameSize];
+    fileName[fileNameSize]='\0';
+
+    // Fill fileName with transferred name
     strcpy(fileName, recvBuff+1);
 
      FILE *fp;
