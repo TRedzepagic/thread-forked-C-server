@@ -18,12 +18,19 @@ int main(int argc, char * argv[])
     int bytesRead=0;
     struct sockaddr_in serv_addr;
 
+    if (argc<2)
+    {
+        perror("Please enter a file name!");
+        return 1;
+    }
+
     // Create a socket first
     check(sockfd = socket(AF_INET, SOCK_STREAM, 0),"\n Error: Could not create socket \n");
   
     	puts("Socket created");
 
     //  Initialize sockaddr_in data structure
+    //  Local testing
     	serv_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
     	serv_addr.sin_family = AF_INET;
     	serv_addr.sin_port = htons( 8888 );
